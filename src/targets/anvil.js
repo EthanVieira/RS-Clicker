@@ -23,6 +23,8 @@ export class Anvil extends ClickableObject {
         const height = 180;
         const x = cameraWidth / 2 - width + 20;
         const y = cameraHeight / 2 - height + 60;
+        let selectedRecipe = null;
+        let selectPopUp = false;
 
         // Add invisible button for anvil
         this.sprite = new Button(scene, x, y, width, height);
@@ -36,6 +38,8 @@ export class Anvil extends ClickableObject {
     }
 
     async clickTarget() {
+        if (this.selectPopUp === true) { return; }
+
         const inv = this.scene.dashboard.inventory;
         const chat = this.scene.scene.get(CONSTANTS.SCENES.CHAT);
 
@@ -55,14 +59,17 @@ export class Anvil extends ClickableObject {
 
         const selectedItem = inv.inventory[selectedIndex];
 
-        switch (selectedItem.name) {
-            case "Bronze Bar":
-                this.smith("BronzeDagger");
-                break;
-            default:
-                chat.writeText("The anvil can only be used with the bar selected");
-                break;
+        if (selectedItem !=== "Bronze Bar") {
+            chat.writeText("The anvil can only be used with the bar selected");
+            return;
         }
+
+        if (selectedRecipe === null) {
+            this.selectRecipe(selectedItem);
+            return;
+        }
+
+        //this.smith(selectedRecipe);
     }
 
     // Take bar and turn it into a smithable item
@@ -109,6 +116,15 @@ export class Anvil extends ClickableObject {
             }
         } else {
             chat.writeText(item.smithingErrorMessage);
+        }
+    }
+
+    async selectRecipe(selectedBar) {
+        selectPopUp = true;
+
+        switch(selectedBar) {
+            case "Bronze Bar": break;
+            default: break;
         }
     }
 
